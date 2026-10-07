@@ -6,4 +6,4 @@ run: build
     target/main
 
 build:
-    {{cxx}} {{flags}} src/{{source}} -Iinclude -o "target/main"
+    {{cxx}} {{flags}} src/*.cpp -Iinclude -o "target/main"
