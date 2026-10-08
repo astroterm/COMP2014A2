@@ -13,4 +13,6 @@ int main() {
     
     AuraAllocation aa("data/outfile.txt");
     aa.allocate();
+
+    std::cout << aa;
 }
