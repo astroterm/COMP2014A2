@@ -9,7 +9,7 @@ public:
     ChargingStation(int c) :
         city(c), 
         chargers(CHARGER_COUNTS[c]),
-        d_last_city(distance_from_sydney()),
+        d_last_city(distance_to_last_city()),
         name_(name())
     {}
 
@@ -53,4 +53,16 @@ private:
     int d_last_city;
     std::string name_;
     std::vector<std::reference_wrapper<Vehicle>> vehicles;
+    friend std::ostream& operator<<(std::ostream& os, ChargingStation& cs);
 };
+
+inline std::ostream& operator<<(std::ostream& os, ChargingStation& cs) {
+    os
+        << '|' << ( std::to_string(cs.city)             | astro::pad(" ",  5)
+            |       astro::colorise(astro::ansi::green) | astro::colorise(astro::ansi::bold) )
+        << '|' << ( cs.name_                            | astro::pad(" ", 15) )
+        << '|' << ( std::to_string(cs.chargers)         | astro::pad(" ", 5) )
+        << '|';
+
+    return os;
+}

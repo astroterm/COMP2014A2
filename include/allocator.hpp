@@ -62,7 +62,8 @@ protected:
 
 inline std::ostream& operator<<(std::ostream& os, const ChargingAllocation& ca) {
     os
-        << "+" << ("-" | astro::pad("-", 5)) << "+" // +---+
+        << "+"
+        << ("-" | astro::pad("-",  5)) << "+" // +---+
         << ("-" | astro::pad("-", 15)) << "+" // +----------------+
         << ("-" | astro::pad("-", 16)) << "+" // +----------------+
         << ("-" | astro::pad("-", 17)) << "+" // +-----------------+
@@ -77,7 +78,8 @@ inline std::ostream& operator<<(std::ostream& os, const ChargingAllocation& ca) 
 
         << "|\n";
     os
-        << "+" << ("-" | astro::pad("-", 5)) << "+" // +---+
+        << "+"
+        << ("-" | astro::pad("-",  5)) << "+" // +---+
         << ("-" | astro::pad("-", 15)) << "+" // +----------------+
         << ("-" | astro::pad("-", 16)) << "+" // +----------------+
         << ("-" | astro::pad("-", 17)) << "+" // +-----------------+
@@ -87,7 +89,8 @@ inline std::ostream& operator<<(std::ostream& os, const ChargingAllocation& ca) 
         os << v << '\n';
     }
     os
-        << "+" << ("-" | astro::pad("-", 5)) << "+" // +---+
+        << "+"
+        << ("-" | astro::pad("-",  5)) << "+" // +---+
         << ("-" | astro::pad("-", 15)) << "+" // +----------------+
         << ("-" | astro::pad("-", 16)) << "+" // +----------------+
         << ("-" | astro::pad("-", 17)) << "+" // +-----------------+
