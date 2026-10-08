@@ -46,6 +46,21 @@ public:
         }).value_or(current_city_id_);
     }
 
+    int closest() const {
+        return astro::ranges::fold_until_index(
+            DISTANCE_MAP
+                | std::views::drop(current_city_id_ + 1)
+                | std::views::take(destination_id_ - current_city_id_)
+                | std::views::reverse,
+            0, std::plus{},
+            [
+                max = capacity_range_
+            ](int in) { return in > max; }
+        ).transform([d = destination_id_](const std::size_t i) {
+            return d - i;
+        }).value_or(current_city_id_);
+    }
+
     int move(int i) {
         remaining_range_ -= sydney_distance(i) - sydney_distance(current_city_id_);
         current_city_id_ = i;
@@ -54,7 +69,7 @@ public:
 
     void wait(double time) { avg_wait_time_ += time; }
 
-    void  charge() { remaining_range_ = capacity_range_; }
+    void charge() { remaining_range_ = capacity_range_; }
 
 private:
     int vehicle_id_;

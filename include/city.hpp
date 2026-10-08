@@ -35,15 +35,17 @@ public:
         if (std::invoke(f, v)) charge(v);
     }
 
-    void calculate() {
-        
+    double calculate() const {
+        double avg_wait_time = 0.5 * vehicles.size() / chargers;
         std::ranges::for_each(vehicles, [
-            avg_wait_time = 0.5 * vehicles.size() / chargers
+            avg_wait_time = avg_wait_time
         ](Vehicle& v) {
             v.wait(avg_wait_time);
         });
+        return avg_wait_time * vehicles.size();
     }
 
+    int queue_length() const { return vehicles.size(); }
 
 private:
     int city;

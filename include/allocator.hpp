@@ -38,6 +38,18 @@ public:
         };
     }
 
+    double calculate() const {
+        return std::ranges::fold_left(
+            stations | std::views::transform([](const ChargingStation& s) {
+                return s.calculate();
+            }), 0.0, std::plus{}
+        ) / std::ranges::fold_left(
+            stations | std::views::transform([](const ChargingStation& s) {
+                return s.queue_length();
+            }), 0, std::plus{}
+        );
+    }
+
     virtual void allocate() = 0;
 
     virtual ~ChargingAllocation() = default;
@@ -102,10 +114,7 @@ public:
             })) break;
         }
 
-        for (ChargingStation& cs : stations) {
-            cs.calculate();
-        }
-
+        std::cout << "BasicAllocation: " << calculate() << '\n';
     }
 };
 
@@ -114,6 +123,48 @@ public:
     AuraAllocation(std::string filename) : ChargingAllocation(filename) {}
 
     void allocate() override {
+        int preferred = vehicles.size() / NUM_CITIES;
+        while (true) {
+            for (Vehicle& v : vehicles | std::views::filter([](const Vehicle& vc) {
+                return vc.furthest() == vc.destination_id();
+            })) v.move(v.furthest());
 
+            for (Vehicle& v : vehicles | std::views::filter([](const Vehicle& vc) {
+                return vc.remaining_range() + vc.capacity_range()
+                    < sydney_distance(vc.destination_id()) - sydney_distance(vc.current_city_id());
+            })) {
+                for (int i = v.furthest(); i > v.current_city_id(); i--) {
+                    if (stations[i].queue_length() <= preferred) {
+                        v.move(i);
+                        stations[i].charge(v);
+                        break;
+                    }
+                }
+            }
+
+            for (Vehicle& v : vehicles | std::views::filter([](Vehicle& vc){
+                return  vc.furthest() < vc.destination_id()
+                    &&  vc.remaining_range() + vc.capacity_range()
+                        >= sydney_distance(vc.destination_id()) - sydney_distance(vc.current_city_id());
+            })) {
+                bool success = false;
+                for (int i = v.closest(); i <= v.furthest(); i++) {
+                    if (stations[i].queue_length() <= preferred) {
+                        v.move(i);
+                        stations[i].charge(v);
+                        success = true;
+                        break;
+                    }
+                }
+                if (success) break;
+                stations[v.move(v.closest())].charge(v);
+            }
+
+            if (std::ranges::all_of(vehicles, [](const Vehicle& vc) {
+                return vc.destination_id() == vc.current_city_id();
+            })) break;
+        }
+
+        std::cout << "AuraAllocation: " << calculate() << '\n';
     }
 };

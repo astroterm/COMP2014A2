@@ -7,9 +7,10 @@
 int main() {
     DemandGenerator dg;
     dg.write("data/outfile.txt");
-    BasicAllocation ca("data/outfile.txt");
-    ca.allocate();
-    
-    std::cout << ca;
 
+    BasicAllocation ba("data/outfile.txt");
+    ba.allocate();
+    
+    AuraAllocation aa("data/outfile.txt");
+    aa.allocate();
 }

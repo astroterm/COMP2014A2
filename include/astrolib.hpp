@@ -58,6 +58,7 @@ namespace astro {
                     }
                     
                 }
+                if (i == 0) return std::nullopt;
                 return i - 1;
             }
         };
